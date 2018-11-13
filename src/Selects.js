@@ -19,7 +19,9 @@ class Selects extends React.Component {
   handleChange = event => {
     const { charactersUrl } = this.state;
 
-    charactersUrl[event.target.value].map(item =>
+    this.setState({characterName: []})
+
+   event.target.value !== '' ? charactersUrl[event.target.value].map(item =>
       fetch(item)
         .then(this.handleRequests)
         .then(data =>
@@ -30,7 +32,8 @@ class Selects extends React.Component {
             ]
           })
         )
-    );
+    )
+     : this.setState({ characterName: [] })
   };
 
   componentDidMount = () => {
