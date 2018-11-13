@@ -8,45 +8,88 @@ import Select from "@material-ui/core/Select";
 class Selects extends React.Component {
   state = {
     filme: "",
-    labelWidth: 0
+    labelWidth: 0,
+    characterName: []
   };
 
-  handleChange = name => event => {
-    this.setState({ [name]: event.target.value });
+  handleRequests = response => response.json();
+
+
+  //Varios Fetchs, fazer só um fetch
+  handleChange = event => {
+    const { charactersUrl } = this.state;
+
+    charactersUrl[event.target.value].map(item =>
+      fetch(item)
+        .then(this.handleRequests)
+        .then(data =>
+          this.setState({
+            characterName: [
+              ...this.state.characterName,
+              data.name
+            ]
+          })
+        )
+    );
   };
+
+  componentDidMount = () => {
+    this.fetchData();
+  };
+
+  fetchData = () =>
+    fetch("https://swapi.co/api/films/")
+      .then(this.handleRequests)
+      .then(data =>
+        this.setState({
+          titles: data.results.map(item => item.title),
+          charactersUrl: data.results.map(item => item.characters)
+        })
+      );
 
   render() {
     const { classes } = this.props;
-
-    const fetchData = () => fetch('https://swapi.co/api/films/1/')
-    .then(response => response.json())
-    .then(data => )
-
-    function createOption(){
-
-    }
-
-    return <div className={classes.root}>
+    const { titles, age } = this.state;
+    return titles ? (
+      <div className={classes.root}>
         <FormControl className={classes.formControl}>
           <InputLabel htmlFor="filme-native-simple">Filme</InputLabel>
-          <Select native value={this.state.age} onChange={this.handleChange("filme")} inputProps={{ name: "filme", id: "filme-native-simple" }}>
+          <Select
+            native
+            value={age}
+            onChange={this.handleChange}
+            inputProps={{ name: "filme", id: "filme-native-simple" }}
+          >
             <option value="" />
-            <option>
-              Star Wars
-            </option>
+            {titles.map((title, index) => (
+              <option key={title} value={index}>
+                {title}
+              </option>
+            ))}
           </Select>
         </FormControl>
-
+        {console.log(this.state.characterName)}
         <FormControl className={classes.formControl}>
-          <InputLabel htmlFor="personagem-native-simple">
-            Personagem
-          </InputLabel>
-          <Select native value={this.state.age} onChange={this.handleChange("personagem")} inputProps={{ name: "personagem", id: "personagem-native-simple" }}>
+          <InputLabel htmlFor="personagem-native-simple">Personagem</InputLabel>
+          <Select
+            native
+            value={this.state.age}
+            inputProps={{ name: "personagem", id: "personagem-native-simple" }}
+          >
             <option value="" />
-            <option value={10}>Darth Vader</option>
+            {titles.map(title => (
+              <option key={title} value={title}>
+                {title}
+              </option>
+            ))}
           </Select>
         </FormControl>
-      </div>;
+      </div>
+    ) : (
+      <div>
+        <loading />
+      </div>
+    );
   }
 }
 
