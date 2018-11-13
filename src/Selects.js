@@ -49,47 +49,33 @@ class Selects extends React.Component {
 
   render() {
     const { classes } = this.props;
-    const { titles, age } = this.state;
-    return titles ? (
-      <div className={classes.root}>
+    const { titles, characterName } = this.state;
+    return titles ? <div className={classes.root}>
         <FormControl className={classes.formControl}>
           <InputLabel htmlFor="filme-native-simple">Filme</InputLabel>
-          <Select
-            native
-            value={age}
-            onChange={this.handleChange}
-            inputProps={{ name: "filme", id: "filme-native-simple" }}
-          >
+          <Select native onChange={this.handleChange} inputProps={{ name: "filme", id: "filme-native-simple" }}>
             <option value="" />
-            {titles.map((title, index) => (
-              <option key={title} value={index}>
+            {titles.map((title, index) => <option key={title} value={index}>
                 {title}
-              </option>
-            ))}
+              </option>)}
           </Select>
         </FormControl>
-        {console.log(this.state.characterName)}
         <FormControl className={classes.formControl}>
-          <InputLabel htmlFor="personagem-native-simple">Personagem</InputLabel>
-          <Select
-            native
-            value={this.state.age}
-            inputProps={{ name: "personagem", id: "personagem-native-simple" }}
-          >
+          <InputLabel htmlFor="personagem-native-simple">
+            Personagem
+          </InputLabel>
+          <Select native inputProps={{ name: "personagem", id: "personagem-native-simple" }}>
             <option value="" />
-            {titles.map(title => (
-              <option key={title} value={title}>
-                {title}
+          {characterName.map((characterName, index) => (
+              <option key={characterName} value={index}>
+                {characterName}
               </option>
             ))}
           </Select>
         </FormControl>
-      </div>
-    ) : (
-      <div>
+      </div> : <div>
         <loading />
-      </div>
-    );
+      </div>;
   }
 }
 
